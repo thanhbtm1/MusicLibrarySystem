@@ -33,7 +33,7 @@ public class SongController {
         return songRepository.getAll();
     }
 
-    // Day 2: Search and Sort
+    // Search and Sort
     public List<Song> searchSongs(String query) {
         String lowerQuery = query.toLowerCase();
         return songRepository.getAll().stream()
@@ -56,7 +56,7 @@ public class SongController {
                 .collect(Collectors.toList());
     }
 
-    // Day 3: Mark or unmark favorite
+    // Mark or unmark favorite
     public void toggleFavorite(String id) {
         Song song = songRepository.getById(id);
         if (song != null) {

@@ -5,6 +5,7 @@ import com.musiclibrary.models.Song;
 import com.musiclibrary.repositories.IRepository;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.ArrayList;
 
 public class PlaylistController {
     private final IRepository<Playlist> playlistRepository;
@@ -35,7 +36,57 @@ public class PlaylistController {
         return playlistRepository.getAll();
     }
 
-    // Day 3: Add or remove songs from playlist
+    // Search within playlist
+    public List<Song> searchSongsInPlaylist(String playlistId, String query) {
+        Playlist playlist = playlistRepository.getById(playlistId);
+        if (playlist == null) {
+            throw new IllegalArgumentException("Playlist not found");
+        }
+        String lowerQuery = query.toLowerCase();
+        List<Song> matchedSongs = new ArrayList<>();
+        
+        for (String songId : playlist.getSongIds()) {
+            Song song = songRepository.getById(songId);
+            if (song != null) {
+                if (song.getTitle().toLowerCase().contains(lowerQuery) ||
+                    song.getArtist().toLowerCase().contains(lowerQuery) ||
+                    song.getAlbum().toLowerCase().contains(lowerQuery)) {
+                    matchedSongs.add(song);
+                }
+            }
+        }
+        return matchedSongs;
+    }
+
+    // Playlist duration statistics
+    public int getPlaylistDuration(String playlistId) {
+        Playlist playlist = playlistRepository.getById(playlistId);
+        if (playlist == null) {
+            throw new IllegalArgumentException("Playlist not found");
+        }
+        int totalSeconds = 0;
+        for (String songId : playlist.getSongIds()) {
+            Song song = songRepository.getById(songId);
+            if (song != null) {
+                totalSeconds += song.getDurationSeconds();
+            }
+        }
+        return totalSeconds;
+    }
+
+    public void viewPlaylistDuration(String playlistId) {
+        try {
+            int duration = getPlaylistDuration(playlistId);
+            int minutes = duration / 60;
+            int seconds = duration % 60;
+            System.out.printf("Playlist '%s' total duration: %d minutes %d seconds%n", 
+                    playlistRepository.getById(playlistId).getName(), minutes, seconds);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    // Add or remove songs from playlist
     public void addSongToPlaylist(String playlistId, String songId) {
         Playlist playlist = playlistRepository.getById(playlistId);
         if (playlist == null) throw new IllegalArgumentException("Playlist not found");
@@ -53,7 +104,7 @@ public class PlaylistController {
         playlistRepository.update(playlist);
     }
 
-    // Day 3: View playlist details
+    // View playlist details
     public void viewPlaylistDetails(String playlistId) {
         Playlist playlist = playlistRepository.getById(playlistId);
         if (playlist == null) {
