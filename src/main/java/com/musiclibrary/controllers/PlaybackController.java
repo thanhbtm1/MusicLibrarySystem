@@ -54,9 +54,11 @@ public class PlaybackController {
     }
 
     private void addToHistory(String songId) {
-        // Simple history tracking (Medium req). Hard req will limit storage size later.
-        recentlyPlayedHistory.remove(songId); // remove if exists to push to front
-        recentlyPlayedHistory.add(0, songId); // add to top
+        recentlyPlayedHistory.remove(songId);
+        recentlyPlayedHistory.add(0, songId);
+        if (recentlyPlayedHistory.size() > 50) {
+            recentlyPlayedHistory.remove(recentlyPlayedHistory.size() - 1);
+        }
     }
 
     public void showRecentlyPlayed() {
