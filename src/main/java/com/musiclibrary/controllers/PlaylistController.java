@@ -129,4 +129,25 @@ public class PlaylistController {
             }
         }
     }
+
+    public Playlist generatePlaylistByRules(String name, String genre, String artist, int maxDuration) {
+        List<Song> allSongs = songRepository.getAll();
+        Playlist newPlaylist = new Playlist(java.util.UUID.randomUUID().toString(), name, "Auto-generated playlist");
+        int currentDuration = 0;
+
+        for (Song song : allSongs) {
+            boolean matchesGenre = genre == null || genre.equalsIgnoreCase(song.getGenre());
+            boolean matchesArtist = artist == null || artist.equalsIgnoreCase(song.getArtist());
+            
+            if (matchesGenre && matchesArtist) {
+                if (currentDuration + song.getDurationSeconds() <= maxDuration) {
+                    newPlaylist.addSongId(song.getId());
+                    currentDuration += song.getDurationSeconds();
+                }
+            }
+        }
+        
+        playlistRepository.add(newPlaylist);
+        return newPlaylist;
+    }
 }

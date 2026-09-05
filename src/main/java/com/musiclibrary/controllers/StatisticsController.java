@@ -37,4 +37,16 @@ public class StatisticsController {
                     rank++, song.getTitle(), song.getArtist(), song.getPopularity());
         }
     }
+
+    public List<Song> rankSongs() {
+        // Multi-criteria ranking: Play count (popularity) + Favorite status
+        // Assume 1 play = 1 point, Favorite = 50 points
+        return songRepository.getAll().stream()
+                .sorted((s1, s2) -> {
+                    int score1 = s1.getPopularity() + (s1.isFavorite() ? 50 : 0);
+                    int score2 = s2.getPopularity() + (s2.isFavorite() ? 50 : 0);
+                    return Integer.compare(score2, score1);
+                })
+                .collect(Collectors.toList());
+    }
 }
