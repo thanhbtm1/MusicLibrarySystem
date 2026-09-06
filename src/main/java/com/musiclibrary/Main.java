@@ -116,18 +116,63 @@ public class Main {
     }
 
     private static void addSongFlow(Scanner scanner) {
-        System.out.print("Enter ID: ");
-        String id = scanner.nextLine();
-        System.out.print("Enter Title: ");
-        String title = scanner.nextLine();
-        System.out.print("Enter Artist: ");
-        String artist = scanner.nextLine();
+        String id;
+        while (true) {
+            System.out.print("Enter ID (format Sxxx, e.g., S001): ");
+            id = scanner.nextLine().trim();
+            if (!id.matches("^S\\d{3}$")) {
+                System.out.println("Invalid format. ID must start with 'S' followed by 3 digits.");
+                continue;
+            }
+            if (songController.getSong(id) != null) {
+                System.out.println("Error: Song ID already exists. Please choose a different ID.");
+                continue;
+            }
+            break;
+        }
+
+        String title;
+        while (true) {
+            System.out.print("Enter Title: ");
+            title = scanner.nextLine().trim();
+            if (title.isEmpty()) {
+                System.out.println("Title cannot be empty. Please enter again.");
+                continue;
+            }
+            break;
+        }
+
+        String artist;
+        while (true) {
+            System.out.print("Enter Artist: ");
+            artist = scanner.nextLine().trim();
+            if (artist.isEmpty()) {
+                System.out.println("Artist cannot be empty. Please enter again.");
+                continue;
+            }
+            break;
+        }
+
         System.out.print("Enter Album: ");
-        String album = scanner.nextLine();
+        String album = scanner.nextLine().trim();
+        
         System.out.print("Enter Genre: ");
-        String genre = scanner.nextLine();
-        System.out.print("Enter Duration (seconds): ");
-        int duration = Integer.parseInt(scanner.nextLine());
+        String genre = scanner.nextLine().trim();
+        
+        int duration;
+        while (true) {
+            System.out.print("Enter Duration (seconds): ");
+            try {
+                duration = Integer.parseInt(scanner.nextLine().trim());
+                if (duration <= 0) {
+                    System.out.println("Duration must be a positive number.");
+                    continue;
+                }
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+            }
+        }
 
         Song newSong = new Song(id, title, artist, album, genre, duration);
         songController.addSong(newSong);
@@ -135,12 +180,34 @@ public class Main {
     }
 
     private static void createPlaylistFlow(Scanner scanner) {
-        System.out.print("Enter Playlist ID: ");
-        String id = scanner.nextLine();
-        System.out.print("Enter Name: ");
-        String name = scanner.nextLine();
+        String id;
+        while (true) {
+            System.out.print("Enter Playlist ID (format Pxxx, e.g., P001): ");
+            id = scanner.nextLine().trim();
+            if (!id.matches("^P\\d{3}$")) {
+                System.out.println("Invalid format. ID must start with 'P' followed by 3 digits.");
+                continue;
+            }
+            if (playlistController.getPlaylist(id) != null) {
+                System.out.println("Error: Playlist ID already exists. Please choose a different ID.");
+                continue;
+            }
+            break;
+        }
+
+        String name;
+        while (true) {
+            System.out.print("Enter Name: ");
+            name = scanner.nextLine().trim();
+            if (name.isEmpty()) {
+                System.out.println("Name cannot be empty. Please enter again.");
+                continue;
+            }
+            break;
+        }
+
         System.out.print("Enter Description: ");
-        String desc = scanner.nextLine();
+        String desc = scanner.nextLine().trim();
 
         Playlist p = new Playlist(id, name, desc);
         playlistController.createPlaylist(p);
@@ -170,16 +237,39 @@ public class Main {
     }
 
     private static void generatePlaylistFlow(Scanner scanner) {
-        System.out.print("Enter new Playlist Name: ");
-        String name = scanner.nextLine();
+        String name;
+        while (true) {
+            System.out.print("Enter new Playlist Name: ");
+            name = scanner.nextLine().trim();
+            if (name.isEmpty()) {
+                System.out.println("Name cannot be empty. Please enter again.");
+                continue;
+            }
+            break;
+        }
+
         System.out.print("Enter desired Genre (or leave blank): ");
-        String genre = scanner.nextLine();
-        if (genre.trim().isEmpty()) genre = null;
+        String genre = scanner.nextLine().trim();
+        if (genre.isEmpty()) genre = null;
+        
         System.out.print("Enter desired Artist (or leave blank): ");
-        String artist = scanner.nextLine();
-        if (artist.trim().isEmpty()) artist = null;
-        System.out.print("Enter Maximum Duration (seconds): ");
-        int duration = Integer.parseInt(scanner.nextLine());
+        String artist = scanner.nextLine().trim();
+        if (artist.isEmpty()) artist = null;
+        
+        int duration;
+        while (true) {
+            System.out.print("Enter Maximum Duration (seconds): ");
+            try {
+                duration = Integer.parseInt(scanner.nextLine().trim());
+                if (duration <= 0) {
+                    System.out.println("Duration must be a positive number.");
+                    continue;
+                }
+                break;
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+            }
+        }
 
         Playlist generated = playlistController.generatePlaylistByRules(name, genre, artist, duration);
         System.out.println("Generated Playlist ID: " + generated.getId());

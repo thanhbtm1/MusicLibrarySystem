@@ -19,13 +19,4 @@ The system follows a strict Model-View-Controller (MVC) and Repository pattern:
 - `controllers/`: Business logic.
 - `commands/`: Implementation of the Command pattern for Undo/Redo mechanisms.
 
-## How to Run
 
-Compile and run the `Main.java` class located in `src/main/java/com/musiclibrary/Main.java`.
-
-Using standard Java CLI:
-```bash
-javac -d out $(find src -name "*.java")
-java -cp out com.musiclibrary.Main
-```
-Follow the interactive CLI menu to manage your music library.
