@@ -13,6 +13,7 @@ import com.musiclibrary.models.Song;
 import com.musiclibrary.repositories.PlaylistRepository;
 import com.musiclibrary.repositories.SongRepository;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -51,6 +52,8 @@ public class Main {
             System.out.println("9. Generate Playlist by Rules");
             System.out.println("10. Undo last Playlist action");
             System.out.println("11. Redo last Playlist action");
+            System.out.println("12. View all Songs");
+            System.out.println("13. View all Playlists");
             System.out.println("0. Exit");
             System.out.print("Choose an option: ");
 
@@ -100,6 +103,12 @@ public class Main {
                     case 11:
                         commandManager.redo();
                         System.out.println("Redo completed.");
+                        break;
+                    case 12:
+                        viewAllSongs();
+                        break;
+                    case 13:
+                        viewAllPlaylists();
                         break;
                     case 0:
                         running = false;
@@ -273,5 +282,31 @@ public class Main {
 
         Playlist generated = playlistController.generatePlaylistByRules(name, genre, artist, duration);
         System.out.println("Generated Playlist ID: " + generated.getId());
+    }
+
+    private static void viewAllSongs() {
+        System.out.println("\n--- ALL SONGS ---");
+        List<Song> songs = songController.getAllSongs();
+        if (songs.isEmpty()) {
+            System.out.println("No songs available.");
+        } else {
+            for (Song song : songs) {
+                System.out.printf("[%s] %s by %s | Album: %s | Genre: %s | Duration: %ds%n",
+                        song.getId(), song.getTitle(), song.getArtist(), song.getAlbum(), song.getGenre(), song.getDurationSeconds());
+            }
+        }
+    }
+
+    private static void viewAllPlaylists() {
+        System.out.println("\n--- ALL PLAYLISTS ---");
+        List<Playlist> playlists = playlistController.getAllPlaylists();
+        if (playlists.isEmpty()) {
+            System.out.println("No playlists available.");
+        } else {
+            for (Playlist playlist : playlists) {
+                System.out.printf("[%s] %s | Description: %s%n",
+                        playlist.getId(), playlist.getName(), playlist.getDescription());
+            }
+        }
     }
 }
